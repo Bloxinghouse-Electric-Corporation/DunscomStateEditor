@@ -1,5 +1,6 @@
 import dearpygui.dearpygui as dpg
 import json
+import requests
 
 global stateData
 stateData = {}
@@ -85,6 +86,11 @@ def importButton(sender, appData, userData):
     global stateData
     dpg.delete_item("system_select", children_only=True)
     dpg.delete_item("editor", children_only=True)
+
+    if dpg.get_value("dataString")[0] != '{':
+        r = requests.get(f"https://pastecord.com/raw/{dpg.get_value("dataString")}")
+        dpg.set_value("dataString", r.text)
+
     stateData = json.loads(dpg.get_value("dataString"))
     dpg.add_radio_button(items=list(stateData.keys()), parent="system_select", callback=systemSelectionChanged)
 
